@@ -1,0 +1,56 @@
+load UI Process:
+
+config:
+
+{
+  "name" : "portal",
+  "ui": {
+    "file" : ["res", "ui", "portal.xrc"],
+    "mainelement" : "Portal",
+    "elements" : {
+      "Portal" :  { "type" : "Frame" , "target" : null }
+    },
+    "events" : [
+      {
+        "windowID" : [
+          {
+            "EVT_BUTTON": [
+              { "PortalHandler" : [ "click" , "advclick"] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "handler" : {
+    "PortalHandler": {
+      "modul" : ["bin", "handler"],
+      "cls" : "PortalHandler"
+    }
+  }
+}
+
+
+1. read ext config(see above)
+2. load ui.file
+3. XmlResource.Load[ui.Portal[ui.mainelement]] // calls XmlResource.LoadFrame(TopEvelIfAny, ui.mainelement)
+4. cache loaded Frame
+5. Bind handler.
+    5.1 Iterate over ui.handler
+        - create and cache instances
+    5.2 Iterate over ui.events
+        - search in Frame/Window windowID => wx.Window.FindWindow (self, id)
+        - iterate over events
+            - bind each Found Event to given Handler from %.1 built handlercache
+6. attach new ui to portal center if there is no other target specified(null)
+
+
+talents:
+fighting:
+cols:   name,category(wihtout headline),be,at/pa,taw
+
+physicals
+cols:   name,be,taw
+
+society, nature, wisdom, languages & Writings, Gifts
+cols:   name, taw

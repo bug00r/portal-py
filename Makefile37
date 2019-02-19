@@ -1,0 +1,157 @@
+include Revision
+
+CC:=gcc
+ifeq ($(CLANG),1)
+	export CC:=clang
+endif
+
+ifeq ($(DEBUG),1)
+	export debug=-ggdb
+endif
+
+LIB_TYPE:=native
+LIB_COMPILE:=deploy_portal_rt_compiled
+ifeq ($(SCRIPT),1)
+	export LIB_TYPE:=script
+	LIB_COMPILE:=no_compile
+endif
+
+CFLAGS=-std=c11 -Wpedantic -pedantic-errors -Wall -Wextra -O2 -DPY_VER=$(PYTHON_VERSION) $(debug)
+
+PS:=/
+BUILD_ROOT:=build
+BUILD_LIB:=lib
+BUILD_DIST:=$(BUILD_FOLDER)$(B_SEP)$(CC)$(B_SEP)$(LIB_TYPE)
+BUILD_TARGET:=$(BUILD_ROOT)$(PS)$(BUILD_DIST)
+BUILD_TARGET_LIB:=$(BUILD_TARGET)$(PS)$(BUILD_LIB)
+BUILD_LIB_DIR:=$(BUILD_ROOT)$(PS)$(BUILD_LIB)
+
+#build-tools
+GEN_DEF:=gendef
+
+PYTHON:=Python$(PYTHON_VERSION)
+PYTHON_SRC:=..$(PS)..
+PYTHON_DIST:=$(PYTHON_SRC)$(PS)$(PYTHON)$(PS)
+PYTHON_SITE_PKG:=$(PYTHON_DIST)Lib$(PS)site-packages$(PS)
+PYTHON_LIB_PATH:=-L$(BUILD_LIB_DIR)
+PYTHON_C_LIBS:= -static -lpython$(PY_MAJOR) -static -lpython$(PYTHON_VERSION)
+PYTHON_C_INCLUDE:=-I./$(PYTHON_SRC)$(PS)$(PYTHON)$(PS)include
+PYTHON_RT_LIB_ROOT:=$(PYTHON_SRC)$(PS)$(PYTHON)$(PS)Lib
+PYTHON_RT_LIB_DLLS:=$(PYTHON_DIST)DLLs
+PYTHON_RT_LIB_DIR:=html encodings importlib collections json urllib concurrent logging multiprocessing http email ctypes
+PYTHON_RT_MODULE_FILES:=codecs io abc _weakrefset site _bootlocale _collections_abc _sitebuiltins \
+genericpath ntpath os stat sysconfig inspect ast types warnings linecache tokenize operator keyword \
+heapq reprlib re sre_compile sre_parse sre_constants copyreg token functools weakref argparse copy \
+textwrap gettext locale struct datetime decimal numbers socket enum uuid string __future__ gzip \
+pprint ftplib queue dummy_threading _dummy_thread threading traceback pathlib fnmatch posixpath \
+contextlib tempfile shutil tarfile random hashlib pickle _compat_pickle subprocess base64 uu quopri \
+calendar stringprep imp dis opcode bisect _compression
+PYTHON_RT_DLLS:=_socket.pyd _multiprocessing.pyd unicodedata.pyd _hashlib.pyd _ctypes.pyd _queue.pyd
+
+PYTHON_RT_PORTAL_FILES:=start
+PYTHON_RT_PORTAL_DIR:=portal_src
+
+C_SRC:=c_src
+C_INCLUDE:=$(PYTHON_C_INCLUDE)
+#lib path
+C_LIB_PATH:=$(PYTHON_LIB_PATH)
+#libs
+C_WIN_LIBS:=-lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32 -ladvapi32 \
+-lshell32 -luuid  -lole32 -loleaut32 -lcomctl32
+C_LIBS:=$(C_WIN_LIBS) $(PYTHON_C_LIBS)
+
+C_APP_UI_NAME:=portal
+C_APP_SRC_EXT:=.c
+C_APP_UI_SRC:=$(C_APP_UI_NAME)$(C_APP_SRC_EXT)
+C_EXE_SUF:=.exe
+C_UI_EXE:=$(C_APP_UI_NAME)$(C_EXE_SUF)
+
+.PHONY: clean mkdir cp_python_libs gen_python_libs_from_dll deploy
+
+all: clean mkdir cp_python_libs gen_python_libs_from_dll portal deploy_exec \
+deploy_py_rt deploy_py_rt_dir deploy_py_rt_dlls deploy_portal_rt deploy_portal_folder \
+deploy_portal_rt_dir deploy_dict2xml_rt deploy_lxml_rt deploy_wx_dir deploy_mako_dir
+
+deploy_wx_dir:
+	cp -r $(PYTHON_SITE_PKG)wx $(BUILD_TARGET_LIB)$(PS)wx
+
+deploy_mako_dir:
+	cp -r $(PYTHON_SITE_PKG)mako $(BUILD_TARGET_LIB)$(PS)mako
+
+portal: $(C_SRC)$(PS)$(C_APP_UI_SRC)
+	$(CC) $(CFLAGS) $(C_SRC)$(PS)$(C_APP_UI_SRC) -o $(BUILD_ROOT)$(PS)$(C_UI_EXE) $(C_INCLUDE) $(C_LIB_PATH) $(C_LIBS)
+	#-mwindows
+
+deploy_lxml_rt:
+	cp -r $(PYTHON_SITE_PKG)lxml $(BUILD_TARGET_LIB)$(PS)lxml
+
+deploy_dict2xml_rt:
+	cp -r $(PYTHON_SITE_PKG)dict2xml $(BUILD_TARGET_LIB)$(PS)dict2xml
+	cp $(PYTHON_SITE_PKG)six.py $(BUILD_TARGET_LIB)$(PS)six.py
+
+deploy_portal_rt_dir: $(LIB_COMPILE)
+
+deploy_portal_rt_compiled:
+	../../Python$(PYTHON_VERSION)/python.exe setup$(PYTHON_VERSION).py build_ext -c mingw32 --build-lib $(BUILD_TARGET) --build-temp build/temp
+	find $(BUILD_TARGET_LIB)$(PS)portal_src -type f -name '*.c' -delete
+	find $(BUILD_TARGET_LIB)$(PS)portal_src -type f -name '*.py' -delete
+	find portal_src -type f -name '*.c' -delete
+
+no_compile:
+	@echo 'nothing to do'
+
+deploy_portal_folder:
+	cp -r portal_src $(BUILD_TARGET_LIB)$(PS)portal_src
+
+deploy_portal_rt: $(PYTHON_RT_PORTAL_FILES)
+
+$(PYTHON_RT_PORTAL_FILES):
+	cp $@.py $(BUILD_TARGET_LIB)$(PS)$@.py
+
+deploy_py_rt_dlls: $(PYTHON_RT_DLLS)
+
+$(PYTHON_RT_DLLS):
+	cp $(PYTHON_RT_LIB_DLLS)$(PS)$@ $(BUILD_TARGET_LIB)$(PS)$@
+
+deploy_py_rt_dir: $(PYTHON_RT_LIB_DIR)
+
+$(PYTHON_RT_LIB_DIR):
+		cp -r $(PYTHON_RT_LIB_ROOT)$(PS)$@ $(BUILD_TARGET_LIB)$(PS)$@
+
+deploy_py_rt: $(PYTHON_RT_MODULE_FILES)
+
+$(PYTHON_RT_MODULE_FILES):
+	cp $(PYTHON_RT_LIB_ROOT)$(PS)$@.py $(BUILD_TARGET_LIB)$(PS)$@.py
+
+deploy_exec:
+	cp $(BUILD_ROOT)$(PS)python$(PYTHON_VERSION).dll $(BUILD_TARGET)$(PS)python$(PYTHON_VERSION).dll
+	cp $(BUILD_ROOT)$(PS)python3.dll $(BUILD_TARGET)$(PS)python3.dll
+	cp $(BUILD_ROOT)$(PS)$(C_UI_EXE) $(BUILD_TARGET)$(PS)$(C_UI_EXE)
+
+gen_python_libs_from_dll:
+	$(GEN_DEF) $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).dll
+	$(GEN_DEF) $(BUILD_LIB_DIR)$(PS)python3.dll
+	cp python3.def $(BUILD_LIB_DIR)$(PS)python3.def
+	cp python$(PYTHON_VERSION).def $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).def
+	dlltool --as-flags=--64 -v --dllname $(BUILD_LIB_DIR)$(PS)python3.dll --def $(BUILD_LIB_DIR)$(PS)python3.def --output-lib $(BUILD_LIB_DIR)$(PS)libpython3.a
+	dlltool --as-flags=--64 -v --dllname $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).dll --def $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).def --output-lib $(BUILD_LIB_DIR)$(PS)libpython$(PYTHON_VERSION).a
+	cp $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).dll $(BUILD_ROOT)$(PS)python$(PYTHON_VERSION).dll
+	cp $(BUILD_LIB_DIR)$(PS)python3.dll $(BUILD_ROOT)$(PS)python3.dll
+	-rm $(BUILD_LIB_DIR)$(PS)python3.dll
+	-rm $(BUILD_LIB_DIR)$(PS)python$(PYTHON_VERSION).dll
+
+cp_python_libs:
+	cp $(PYTHON_DIST)python$(PYTHON_VERSION).dll $(BUILD_ROOT)$(PS)$(BUILD_LIB)/python$(PYTHON_VERSION).dll
+	cp $(PYTHON_RT_LIB_DLLS)$(PS)python3.dll $(BUILD_ROOT)$(PS)$(BUILD_LIB)/python3.dll
+
+clean:
+	-rm -r $(BUILD_ROOT)
+	-rm *.def
+	-find portal_src -type f -name '*.c' -delete
+
+mkdir:
+	-mkdir -p $(BUILD_LIB_DIR)
+	-mkdir -p $(BUILD_TARGET)
+	-mkdir -p $(BUILD_TARGET)$(PS)$(BUILD_LIB)$(PS)$(PYTHON_SRC)
+
+

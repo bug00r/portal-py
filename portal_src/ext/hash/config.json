@@ -1,0 +1,41 @@
+{
+  "ident" : "hash",
+  "name" : "Hashes",
+  "help": "This may help you to encode something :)",
+  "ui": {
+    "file" : ["res", "ui", "hash.xrc"],
+    "elements" : {
+      "main" : {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"hash" }
+      }
+    },
+    "events" : [
+      {
+        "name": "calchash",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"HashHandler", "funcs" : [ "calchash" ] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "public": {
+    "start" : [
+      { "name" : "HashHandler", "funcs" : ["start"] }
+    ],
+    "initui": [
+      { "name" : "HashHandler", "funcs" : ["initui"] }
+    ]
+  },
+  "handler" : [
+    {
+      "name" : "HashHandler",
+      "modul" : "portal_src.ext.hash.bin.handler",
+      "cls" : "HashHandler"
+    }
+  ]
+}

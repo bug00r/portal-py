@@ -1,0 +1,84 @@
+{
+  "ident" : "renderbug",
+  "name" : "Render-Bug",
+  "help": "This is a software rendering and gfx testing platform",
+  "ui": {
+    "file" : ["res", "ui", "renderbug.xrc"],
+    "elements" : {
+      "main" : {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"renderbug" }
+      },
+      "render_tree" : {
+        "cacheable": false, "type" : "Panel" , "params" : { "parent": null , "name":"render_tree" }
+      }
+    },
+    "events" : [
+      {
+        "name": "del_render_tree",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"RenderHandler", "funcs" : [ "del_render_tree" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "add_render_tree",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"RenderHandler", "funcs" : [ "add_render_tree" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "generatenoise",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"RenderHandlerOld", "funcs" : [ "generatenoise" ] }
+            ]
+          }
+        ]
+      },{
+        "name": "renderer_features",
+        "event" : [
+          {
+            "name": "EVT_TREE_ITEM_ACTIVATED",
+            "handler": [
+              { "name":"RenderHandler", "funcs" : [ "add_new_feature" ] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "public": {
+    "createnoise" : [
+      { "name" : "RenderHandlerOld", "funcs" : ["createnoise"] }
+    ],
+    "start": [
+      { "name" : "RenderHandler", "funcs" : ["start"] }
+    ],
+    "initui": [
+      { "name" : "RenderHandler", "funcs" : ["initui"] }
+    ]
+  },
+  "handler" : [
+    {
+      "name" : "RenderHandler",
+      "modul" : "portal_src.ext.renderbug.bin.handler",
+      "cls" : "RenderHandler"
+    },
+    {
+      "name" : "RenderHandlerOld",
+      "modul" : "portal_src.ext.renderbug.bin.handler_old",
+      "cls" : "RenderHandler"
+    }
+  ]
+}

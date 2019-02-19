@@ -1,0 +1,208 @@
+############
+## RESULT ##
+############
+
+STOP
+
+The result of this concept is the decision.
+
+1. All Data are stored in a sql3 Database
+2. As Data we are using XML and mapping with MAKO Python templates instead of XSLT
+    - Benefit is the complete Power of Python in cowork with lxml
+3. So we need sql3 => builtin, lxml => installed => mako
+4. We need a Gui which creates ressources from type
+5. Resource types:
+    - xml (data)
+    - templates (Mako templates)
+        - transformation templates
+        - GUI-Template Factory => based on XRC
+            - For each use case we need a ui template
+            - In special cases we could provide some templates based XRC objects based of xml result data
+6. We need an easy edit functions
+    - As example we could implement a copy-function which uses xpath
+    - a tree view should give good overview.
+
+STOP
+
+###########################################################################
+## This Following was nice to test but to complex in Reason of Functions ##
+###########################################################################
+
+
+Abstract [Resource]:
+
+- A [Resource] is a Collection of [Data] from specific [Type].
+- A [Type] specified the [Structure] which the [Data] will be have.
+- A [Structure] can be one of following
+    - [Database] which will have Tables and other
+    - [Raw-Files]
+        - [Xml], [JSON], [Properties]
+- [Data] in an abstract way are: A Collection of [Records]
+- A [Record] contains a Collection of [Attribute]'s and there [Values].
+- A [Attribute] is an identifier for a [Value]
+- A [Value] can be a [Primitive] or another [Record]
+- A [Primitive] can be:
+    - numeric values(int, float, double, etc)
+    - Character Sequence which could be include valid Character excluding of them who defines the [Resource] [Structure]
+        - Example XML:
+            OK      : <node attribute1="value1" attribute2="3" />
+            NOT OK  : <node attribute1="val"ue1" attribute2="3" />
+
+Abstract [System]:
+
+- A [System] is a Collection [Data] from different [Resource]s and their [Binding]s and [Workflow]s
+- A [Binding] defines the way we could reference [Resource]s in another [Resource]s by using their own [Resource-System]s
+- A [Workflow] defines the Way what we want to do with [Resource]s also [Binding]s with help of different [Mechanism]s
+- [Mechanism]s are a Collection of [Function]s, [Operator]s and [Control]s
+- A [Function] is a Way to handle Data inside a Workflow on an [Customize]d or [Built-in] Way
+- A [Customize] is a selfmade callable [Function] or Sub[Workflow]
+- A [Built-in] is a [Function] defined by the [Resource-System]
+- A [Resource-System] is the surrounding native Access Mechanism
+    Examples:
+        - [XSLT] => a lot of functionality like Xpath and node Functions, but only accessible from XSLT Processor Scope
+        - SQL-Functions => a lot of functionality for column data, but only accessible from SQL Engine Scope
+- An [Operator] is a smaller part to handle data like:
+    - numerics +,- (mathematical operators)
+    - Associations like using variables
+
+
+So, what we want to do.
+
+We want a high flexible [Workflow] Mechanism which have access to different [Resource-System]s
+
+Ideas without checking:
+- We want a generic Workflow which handles logic and results only by customized Functions. As Example we can say that
+  Data have same represenation but defining their own Type like Talent, Breed, Breakfast....and so on. Furhtermore
+  we want
+- We could create XSLT Wotkflows with XML Resource and DP Resource Access about a Template Mechanism. All Files like
+  XML, XSLT are stored inside the Database.
+
+FAQ:
+1. Can we Access XSLT/XPATH inside of SQL Engine
+    A: No, not an very easy Way
+2. Can we Access SQL Engine inside of XSLT Files?
+3. Can we combine a Template Engine with XSLT and DB-Engine?
+    A: Yes we can, we should use MAKO Template Engine...still installed :)
+
+
+Abstract Workflow Process:
+
+What we want?
+0. Showing all Text in more than one Language
+    => Multilanguage Resource
+1. Add/Rem Person generation. Edit existing one
+    => Add/Edit Name
+    => Add/Edit Age => will calculated by Template=> 2w20+2
+    => Add/Edit Look/Fashion
+    => Add/Edit Gender
+2. Add/Rem Breed to Person. Edit existing one
+3. Add/Rem Culture to Person. Edit existing one
+4. Add/Rem Profession(s) to Person. Edit existing one
+5. Add/Rem Pro/Cons(s) to Person. Edit existing one
+6. Add/Rem Skills to Person. Edit existing one
+7. Add/Rem Special Abillities to Person. Edit existing one
+8. Add/Rem Magic Abillities to Person. Edit existing one
+    8.1 If it possible => Dependency Mage
+9. Add/Rem Cleric  Abillities to Person. Edit existing one
+    8.1 If it possible => Dependency Cleric
+
+
+How we can realize?
+- We have a lot of Data records and we can add other Data.
+- We need a generic way to realize it?
+- We must specify which Data Types are possible like:
+    Types: Person, Adventure, Talent, Breeds, Cultures
+    Example: - Person can have Talents, Culture, Breed
+             - We have an association like 1 to 1 or 1 to n or optional 0-N
+                - Person can only have one Breed
+                - Person can have more Talents
+             - We have dependencies like Type which exist, Type which exists with specific Value(Value can have complex calculation)
+                - Person can only be Shaman if Breed is Goblin
+                - Person can only have Spells if the has a Profession like Mage
+                - Person can only have Special Ability if current Record contains in summary a talent from Swords greater than 12
+
+
+Specific Plan:
+- We need a Type System like a class
+    - defining Types
+    - defining possible member types (like classes)
+    - methods for interaction
+    - every method must Check the used types
+  A: As we can see we can assemble a py class structure with MAKO or build in Type (Great Idea)
+- With the same technic like the Type System we can create other Factory Methods
+- In summary we will have a complete generic Workflow. Maybe it will be useful to create a DSL? No DSL we will create Types
+  with Python structures.
+
+#################
+## HERE WE ARE ##
+#################
+
+Concrete Plan:
+1. Creating Typesystem
+    - Typesystem is a tree
+    - We must specify a base Type-System
+    - so we can create different systems beside like  dsa41, dsa5 shadowrun...etc
+2. Execution based on Types => you can eval or exec python code in Sandbox without access to external system. That could be dangerous
+3. We need a ressource to Typesystem Mapping if we access the data
+3. UI-Dialog System: We need it to specify UI Components. UI Env should only work with created Typesystem
+
+Concrete Steps:
+
+1.) Typesystem:
+    - name => Typesystem name
+    1.1) BasicType:
+        - name      => Text, Number (this both are enough)
+    1.2) NewType: []
+        - Name      => [Talent, Skill,...]
+        - Member: []
+            type    => [Text, Number, NewType.name]
+            name    => Membername
+        - method:
+            name    => [methodname]
+            param   => List of {NewTypes: value}
+            return  => None or NewType
+
+
+research:
+
+>>>>>> not working with arguments
+
+functions to compile:
+>>> mycode = compile("""print("line1")\ni = 12 +12\nprint("my i" + str(i))""","<string>","exec")
+>>> func = types.FunctionType(mycode, globals())
+>>> func()
+line1
+my i24
+
+>>> mycode = compile("""print("line1")\ni = 12 +12\nprint("my i: " + str(i))\nfor name in ['name1', 'name2', 'name3']:\n\tprint(name)\n\tfor nam in ['x', 'y', 'z']:\n\t\tprint('vadda: ' + nam)""","<string>","exec")
+>>> func = types.FunctionType(mycode, globals())
+>>> func()
+line1
+my i: 24
+name1
+vadda: x
+vadda: y
+vadda: z
+name2
+vadda: x
+vadda: y
+vadda: z
+name3
+vadda: x
+vadda: y
+vadda: z
+
+We must specify tabs on each [must found a name expression we must increase tabs]
+
+<<<<<<< not working with arguments
+
+>>> mycode = compile("""def newfunc(x,y,z):\n\tprint("line1: " + x)\n\ti = 12 +12\n\tprint("my i" + str(i) + y + " " + z)""","<string>","exec")
+>>> tf = types.FunctionType(newfunc.__code__, globals())
+>>> del newfunc
+>>> tf("x","y","z")
+line1: x
+my i24y z
+
+for class functions we must do this:
+
+types.MethodType(tf, class)

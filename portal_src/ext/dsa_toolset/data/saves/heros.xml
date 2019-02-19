@@ -1,0 +1,244 @@
+<heros>
+<hero description="Held" gender="male" age="20" so="0" name="Held123">
+	<look>tolles aussehen</look>
+	<status>sowas von heldenhaft</status>
+	<title>Prof.Dr.</title>
+	<story/>
+	<manual>
+		<pros name="Vorteile"><pro name="Akademische Ausbildung(Krieger)">
+			<gp name="Generierungspunkte" value="20"/>
+		</pro><pro name="Affinität zu Geistern,Elementaren oder Dämonen">
+			<gp name="Generierungspunkte" value="-"/>
+		</pro></pros>
+		<contras name="Nachteile"/>
+		<talents>
+			<group name="Kampf"/>
+			<group name="Körper"/>
+			<group name="Gesellschaft"/>
+			<group name="Wissen"/>
+			<group name="Natur"/>
+			<group name="Handerk"/>
+			<group name="Sprachen und Schriften"/>
+		<talent inc="B" type="special" name="Alchimie" test="MU/KL/FF" taw="0"/></talents>
+		<specials name="Sonderfertigkeiten">
+			<group name="Allgemeine"/>
+			<group name="Kampf (bewaffnet)"/>
+			<group name="Kampf (waffenlos)"/>
+			<group name="Klerikale"/>
+			<group name="Magische"/>
+		<specialability name="Liturgien">
+		</specialability><specialability name="Dämonenbindung I/II">
+				<mage type="ZHB"/> 
+		</specialability></specials>
+	</manual>
+	<config>
+		<base-gp value="110"/>
+	</config>
+	<baseinformations name="Basisinformationen">
+		<attributes>
+			<attribute name="Mut" shortname="MU" basevalue="8"/>
+			<attribute name="Klugheit" shortname="KL" basevalue="8"/>
+			<attribute name="Körperkraft" shortname="KK" basevalue="8"/>
+			<attribute name="Gewandheit" shortname="GE" basevalue="8"/>
+			<attribute name="Fingerfertigkeit" shortname="FF" basevalue="8"/>
+			<attribute name="Intuition" shortname="IN" basevalue="8"/>
+			<attribute name="Konstitution" shortname="IN" basevalue="8"/>
+			<attribute name="Charisma" shortname="CH" basevalue="8"/>
+			<attribute name="Sozialstatus" shortname="SO" basevalue="0"/>
+		</attributes>
+	</baseinformations>
+	<breedcontainer name="Rasse"><breed name="Die Firnelfen">
+			<gp name="Generierungspunkte" value="24"/>
+			<colortypes>
+				<colors name="Haarfarbe" die="W20" result="silbern">
+					<color name="blauschwarz" value="1"/>
+					<color name="schwarz" value="2"/>
+					<color name="silbern" value="3-5"/>
+					<color name="schneeweiß" value="6-9"/>
+					<color name="weißblond" value="10-14"/>
+					<color name="hellblond" value="15-17"/>
+					<color name="mittelblond" value="18-19"/>
+					<color name="dunkelblond" value="20"/>
+				</colors>
+				<colors name="Augenfarbe" die="W20" result="eisgrau">
+					<color name="schwarz" value="1"/>
+					<color name="silbergrau" value="2-3"/>
+					<color name="eisgrau" value="4-7"/>
+					<color name="saphirblau" value="8-11"/>
+					<color name="smaragdgrün" value="12-15"/>
+					<color name="bernsteinfarben" value="16-18"/>
+					<color name="goldgesprenkelt" value="19"/>
+					<color name="rubinrot" value="20"/>
+				</colors>
+			</colortypes>
+			<body-height name="Körpergröße" value="1.56" die="2w20" result="1.82"/>
+			<body-weight name="Gewicht" value="-120" type="Stein" result="62"/>
+			<mods>
+				<le name="LE-Mod" value="7" type="LeP"/>
+				<au name="AU-Mod" value="15" type="AuP"/>
+				<ae name="AU-Mod" value="12" type="AuP"/>
+				<mr name="MR" value="-1"/>
+				<attributes name="Eingenschafts-Modifikatoren">
+					<attribute name="KL" value="-1"/>
+					<attribute name="IN" value="+1"/>
+					<attribute name="GE" value="+2"/>
+					<attribute name="KO" value="+1"/>
+					<attribute name="KK" value="-1"/>
+				</attributes>
+				<talents>
+					<talentgroup name="Körper">
+						<talent name="Athletik" value="1"/>
+						<talent name="Körperbeherrschung" value="3"/>
+						<talent name="Schleichen" value="2"/>
+						<talent name="Singen" value="1"/>
+						<talent name="Sinnenschärfe" value="5"/>
+						<talent name="Zechen" value="-2"/>
+					</talentgroup>
+					<talentgroup name="Natur">
+						<talent name="Orientierung" value="2"/>
+					</talentgroup>
+				</talents>
+			</mods>
+			<pros name="Vorteile">
+				<automatic>
+					<pro name="Altersresistenz">
+			<gp name="Generierungspunkte" value="3"/>
+		</pro>
+					<pro name="Dämmerungssicht"/>
+					<pro name="Herausragender Sinn">
+						<option name="Gehör"/>
+						<option name="Geruch"/>
+						<option name="Tast"/>
+					</pro>
+					<pro name="Kälteresistenz"/>
+					<pro name="Resistenz gegen Krankheiten"/>
+					<pro name="Richtungssinn"/>
+					<pro name="Vollzauberer"/>
+					<pro name="Wohlklang"/>
+					<pro name="Zweistimmiger Gesang"/>
+				</automatic>
+				<recommended>
+					<pro name="Astrale Regeneration"/>
+					<pro name="Astralmacht"/>
+					<pro name="Ausdauernd"/>
+					<pro name="Balance"/>
+					<pro name="Begabung Musizieren"/><!-- Check how it works. maybe chnange structure for logic  -->
+					<pro name="Begabung Singen"/><!-- Check how it works. maybe chnange structure for logic  -->
+					<pro name="Beidhändig"/>
+					<pro name="Feenfreund"/>
+					<pro name="Flink"/>
+					<pro name="Gefahreninstikt"/>
+					<pro name="Gut Aussehend"/>
+					<pro name="Herausragende Balance"/>
+					<pro name="Herausragender Sinn"/>
+					<pro name="Innerer Kompass"/>
+					<pro name="Nachtsicht"/>
+					<pro name="Schlangenmensche"/>
+				</recommended>
+				<improper>
+					<pro name="Hitzeresistenz"/>
+					<pro name="Kampfrausch"/>
+					<pro name="Schwer zu verzaubern"/>
+					<pro name="Vom Schicksal begünstigt"/>
+					<pro name="Zwergennase"/>
+				</improper>
+			</pros>
+			<contras name="Nachteile">
+				<automatic>
+					<contra name="Hitzeempfindlich"/>
+					<contra name="Sensibler Geruchssinn" value="6"/>
+					<contra name="Unfähigkeit Zechen"/>
+				</automatic>
+				<improper>
+					<contra name="Behäbig"/>
+					<contra name="Eingeschränkter Sinn"/>
+					<contra name="Fettleibig"/>
+					<contra name="Glasknochen"/>
+					<contra name="Kleinwüchsig"/>
+					<contra name="Kurzatmig"/>
+					<contra name="Nachtblind"/>
+					<contra name="Platzangst"/>
+					<contra name="Stubenhocker"/>
+					<contra name="Übler Geruch"/>
+					<contra name="Unanssehnlich"/>
+				</improper>
+				<recommended>
+					<contra name="Albino"/>
+					<contra name="Farbenblind"/>
+					<contra name="Nahrungsrestriktion"/>
+				</recommended>
+			</contras>
+			<cultures name="Kulturen">
+				<common>
+					<culture name="Firnelfische Sippe"/>
+				</common>
+				<possible>
+					<culture name="Auelfische Sippe"/>
+					<culture name="Steppenelfische Sippe"/>
+					<culture name="Elfische Siedlung"/>
+					<culture name="Fjarninger"/>
+					<culture name="Gjalskerländer"/>		
+					<culture name="Nivesenstämme"/>
+					<culture name="Norbarden"/>
+					<culture name="Thorwal"/>
+				</possible>
+			</cultures>
+		</breed></breedcontainer>
+	<culturecontainer name="Kultur"><culture name="Andergast und Nostria"/></culturecontainer>
+	<professioncontainer name="Profession"><profession name="Ausrufer/in">
+			<gp name="Generierungspunkte" value="0"/>
+			<mods>
+				<so min="3" max="8"/>
+			</mods>
+		</profession></professioncontainer>
+	<pros name="Vorteile"/>
+	<contras name="Nachteile"/>
+	<specials name="Sonderfertigkeiten"/>
+	<talents name="Talente">
+		<group name="Kampf">
+			<talent type="base" name="Dolche" at="0" pa="0" value="0"/>
+			<talent type="base" name="Hiebwaffen" at="0" pa="0" value="0"/>
+			<talent type="base" name="Raufen" at="0" pa="0" value="0"/>
+			<talent type="base" name="Ringen" at="0" pa="0" value="0"/>
+			<talent type="base" name="Säbel" at="0" pa="0" value="0"/>
+			<talent type="base" name="Wurfmesser" at="0" pa="0" value="0"/>
+		</group>
+		<group name="Körper">
+			<talent type="base" name="Athletik" test="GE/KO/KK" value="0"/>
+			<talent type="base" name="Klettern" test="MU/GE/KK" value="0"/>
+			<talent type="base" name="Selbstbeherrschung" test="MU/KO/KK" value="0"/>
+			<talent type="base" name="Körperbeherrschung" test="MU/IN/GE" value="0"/>
+			<talent type="base" name="Schleichen" test="MU/IN/GE" value="0"/>
+			<talent type="base" name="Schwimmen" test="GE/KO/KK" value="0"/>
+			<talent type="base" name="Sich Verstecken" test="MU/IN/GE" value="0"/>
+			<talent type="base" name="Singen" test="IN/CH/CH(KO)" value="0"/>
+			<talent type="base" name="Sinnenschärfen" test="KL/IN/IN(FF)" value="0"/>
+			<talent type="base" name="Tanzen" test="CH/GE/GE" value="0"/>
+			<talent type="base" name="Zechen" test="IN/KO/KK" value="0"/>
+		</group>
+		<group name="Natur">
+			<talent type="base" name="Fährtensuchen" test="KL/IN/IN(KO)" value="0"/>
+			<talent type="base" name="Orientierung" test="KL/IN/IN" value="0"/>
+			<talent type="base" name="Wildnisleben" test="IN/GE/KO" value="0"/>
+		</group>
+		<group name="Wissen">
+			<talent type="base" name="Rechnen" test="KL/KL/IN" value="0"/>
+			<talent type="base" name="Götter/Kulte" test="KL/KL/IN" value="0"/>
+			<talent type="base" name="Sagen/Legenden" test="KL/IN/CH" value="0"/>
+		</group>
+		<group name="Gesellschaft">
+			<talent type="base" name="Menschenkenntnis" test="KL/IN/CH" value="0"/>
+			<talent type="base" name="Überreden" test="MU/IN/CH" value="0"/>
+		</group>
+		<group name="Handwerk">
+			<talent type="base" name="Heilkunde Wunden" test="KL/CH/FF" value="0"/>
+			<talent type="base" name="Holzbearbeitung" test="KL/FF/KK" value="0"/>
+			<talent type="base" name="Kochen" test="KL/IN/FF" value="0"/>
+			<talent type="base" name="Lederbearbeitung" test="KL/FF/FF" value="0"/>
+			<talent type="base" name="Malen/Zeichnen" test="KL/IN/FF" value="0"/>
+			<talent type="base" name="Schneidern" test="KL/FF/FF" value="0"/>
+		</group>
+	</talents>
+	<talents name="Zauber"/>
+	<talents name="Liturgie"/>
+</hero></heros>

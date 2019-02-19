@@ -1,0 +1,43 @@
+{
+  "name" : "portal",
+  "ui": {
+    "file" : ["res", "ui", "portal.xrc"],
+    "elements" : {
+      "main" : {
+        "cacheable": true, "type" : "Frame" , "params" : { "parent":null, "name":"Portal" }
+      },
+      "parentexample" : {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": {"extension": "_portal_", "element": "test"}, "name":"Portal" }
+      }
+    },
+    "events" : [
+      {
+        "Portal" : [
+          {
+            "EVT_BUTTON": [
+              { "PortalHandler" : [ "click" , "advclick"] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "public": {
+    "start" : [
+      { "name" : "PortalHandler", "funcs" : ["start"] }
+    ],
+    "addtomain" : [
+      { "name" : "PortalHandler", "funcs" : ["addtomain"] }
+    ],
+    "bind_events" : [
+      { "name" : "PortalHandler", "funcs" : ["bind_events"] }
+    ]
+  },
+  "handler" : [
+    {
+      "name" : "PortalHandler",
+      "modul" : "portal_src.ext._portal_.bin.handler",
+      "cls" : "PortalHandler"
+    }
+  ]
+}

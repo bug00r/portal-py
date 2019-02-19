@@ -1,0 +1,20 @@
+Die Bibliothek, soll alles was das schwarze Auge zu bieten hat in die bereits vorherbestimmten Kategorien unterteilen.
+
+Der neue Ansatz beinhaltet auch eine Neustrukturierung der Hgen Daten. Es soll in Zukunft nur noch eine Menge an Ressourcen
+existieren. Jeder Kategory wird eine Datei zugeordnet und über den REsource Manager geladen.
+
+Das bedeutet, keine Redundanzen. Es werden nur einfache Redundanzen verwendet.
+    Einfache redundanz => <entry name="entryname"> als Beispiel:
+        - <talent name="Dolche">  //referenz zu  <talent name="Dolche" type="Basis" category="Kampf" ...>
+        - <talent name="Heilkunde Wunden">  //referenz zu  <talent name="Heilkunde Wunden" type="Basis" category="Handwerk" ersatztalente...>
+        - <kultur name="Trollzacker">  referenz zu..... ganz langer Kultureintrag. Die Daten werden dann später konsolidiert.
+
+Beispiel:
+- Rassen (breeds.xml, die Datei existiert bereits, muss aber an das neue Konzept angepasst werden)
+- Kulturen (cultures.xml, die Datei existiert bereits, muss aber an das neue Konzept angepasst werden)
+
+
+
+Bugs:
+
+1. Umlauts after xpath crashed, inside loading ressources we have umlaut entities. How to manage?

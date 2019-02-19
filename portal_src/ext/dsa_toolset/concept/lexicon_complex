@@ -1,0 +1,158 @@
+####
+####  !!! Dieses Konzept wurde nicht umgesetzt, aber als Referenz aufbewart. Bitte bei bibliothek_easy.txt weiterlesen.
+####
+
+
+###################################################
+# POC
+###################################################
+
+Aktuelle Implementierung:
+    - struct_.__init__
+    - test/test_struct.py
+
+
+
+Use Cases:
+
+- Es soll eine Lexikon Type erstellt werden können. Dieser Type repräsentiert einen strukturiellen Aufbau eines XML
+  Knoten. Dementsprechend muss er folgende XML-Elemente in der jeweiligen Ausprägung beschreiben können.
+
+  Als Beispiel soll folgender XML Knoten abgebildet werden:
+
+    <weapon name="Dolch" tp="1w+2" tpkk="12/5" wm="0/-1">
+        <description>Hier steht eine Beschreibung</description>
+        <kulturen verbreitung="üblich">
+            <kultur name="Tulamiden" />
+            <kultur name="Mittelländer" />
+            <subkultur name="Mittelländer Stadt" />
+            <exotischekultur name="Orks" />
+        </kulturen>
+        <kulturen verbreitung="unüblich">
+            <kultur name="Horas" />
+            <kultur name="Trollzack" />
+            <subkultur name="Bornland" />
+            <exotischekultur name="Achaz" />
+            <breed name="mensch" />
+        </kulturen>
+        <talent variant="kampf" name="Stichwaffen" at="1" pa="32" taw="2" />
+    </weapon>
+
+  Wie könnte ein XML Element aussehen um diesen Fall zu beschreiben:
+
+    <dtype name="float">
+        <validate>\d{1,12}\.d{1,12}</validate> #regex für text
+    </dtype>
+    <dtype name="int">
+        <validate>\d+</validate> #regex für text
+    </dtype>
+    <dtype name="text">
+        <validate>.+</validate> #regex für text
+    </dtype>
+    <dtype name="dice">
+        <validate>([1-9]+[wW][+-]{1}[1-9]+[+-]?)+</validate> #regex muss wegen der ZEichenvielfalt in ein eigenes Tag ggfs. mit CData Section
+    </dtype>
+    <dtype name="intsep">
+        <validate>[+-][1-9]+\/[+-][1-9]+</validate> #regex muss wegen der ZEichenvielfalt in ein eigenes Tag ggfs. mit CData Section
+    </dtype>
+    <struct name="weapon">                          # Der Name vom Element
+        <attribute name="tp" value="dice" />        # Attribut mit Name und Wert. Hinweis: Dice ist speziell => [1-9]+[wW][+-][1-9]+
+        <attribute name="tpkk" value="intsep" />    # Attribut mit Name und Wert. Hinweis: intsep ist speziell => [+-][1-9]+\/[+-][1-9]+
+        <attribute name="tp" value="intsep" />      # Attribut mit Name und Wert. Hinweis: intsep ist speziell => [+-][1-9]+\/[+-][1-9]+
+        <attribute name="name" value="text" />      # Attribut mit Name und Wert als Text
+        <node type="plain" name="description" value="text">    # Element mit einem Text. Hinweis CDATA Fragmente nicht vergessen
+                                                               # Type plain liefert einen normalen Knoten
+        <nodeset name="kulturen">
+            <attribute name="verbreitung" value="text" />
+            <node type="kultur" amount="*">         # Ein nodeset mit nodes vom type kultur und der Anzahl *(0..N)
+                                                    # Wird ein spezieller type angegeben (alle außer plain). muss bei der Liste
+                                                    # ein UI mit diesem struct type angelegt werden.
+            <node type="subkultur" amount="*">      # Wenn mehrere unterschiedliche Knoten Typen muss ausgewählt werden können.
+            <node type="exotischekultur" amount="*"># In diese Fall eine Auswahl zwischen "kultur, subkultur und exotischekultur"
+        </nodeset>
+
+        <nodeset name="kulturen">
+            <attribute name="verbreitung" value="text" />
+            <node type="kultur" amount="*">
+            <node type="subkultur" amount="*">
+            <node type="exotischekultur" amount="*">
+
+            <node type="plain" name="breed">                           # Wenn kein type angegeben wurde, dann ist es ein für dieses Element neues element
+                <attribute name="name" value="text" />
+            </node>
+        </nodeset>
+
+        <node type="plain" name="talent">                           # Wenn kein type angegeben wurde, dann ist es ein für dieses Element neues element
+            <attribute name="variant" value="text" />
+            <attribute name="name" value="text" />
+            <attribute name="at" value="int" />
+            <attribute name="pa" value="int" />
+            <attribute name="taw" value="int" />
+        </node>
+    </struct>
+
+
+###################################################
+# /EOF POC
+###################################################
+
+Konkretes Datenmodell:
+
+Bedeutung Elemente:
+
+struct      => Wurzelknoten der Datenstruktur
+attr        => Attributeknoten
+list        => Listknoten. Eine Collection für diverse andere Knoten
+node        => Knoten für eine anonyme/neue Struktur(innere Struktur)
+ref         => Referenzknoten auf eine bereits existierende Struktur
+
+Beispiel von oben. konkret:
+
+    <struct name="weapon">                          # Der Name vom Element
+        <attr name="tp" value="dice" />        # Attribut mit Name und Wert. Hinweis: Dice ist speziell => [1-9]+[wW][+-][1-9]+
+        <attr name="tpkk" value="intsep" />    # Attribut mit Name und Wert. Hinweis: intsep ist speziell => [+-][1-9]+\/[+-][1-9]+
+        <attr name="tp" value="intsep" />      # Attribut mit Name und Wert. Hinweis: intsep ist speziell => [+-][1-9]+\/[+-][1-9]+
+        <attr name="name" value="text" />      # Attribut mit Name und Wert als Text
+        <node name="description" value="text" />    # Element mit einem Text. Hinweis CDATA Fragmente nicht vergessen
+                                                    # Type plain liefert einen normalen Knoten
+        <list name="kulturen">
+            <attribute name="verbreitung" value="text" />
+            <ref type="kultur" amount="*">         # Ein nodeset mit nodes vom type kultur und der Anzahl *(0..N)
+                                                    # Wird ein spezieller type angegeben (alle außer plain). muss bei der Liste
+                                                    # ein UI mit diesem struct type angelegt werden.
+            <ref type="subkultur" amount="*">      # Wenn mehrere unterschiedliche Knoten Typen muss ausgewählt werden können.
+            <ref type="exotischekultur" amount="*"># In diese Fall eine Auswahl zwischen "kultur, subkultur und exotischekultur"
+        </list>
+
+        <list name="kulturen">
+            <attr name="verbreitung" value="text" />
+            <ref type="kultur" amount="*">
+            <ref type="subkultur" amount="*">
+            <ref type="exotischekultur" amount="*">
+
+            <node name="breed">                           # Wenn kein type angegeben wurde, dann ist es ein für dieses Element neues element
+                <attr name="name" value="text" />
+            </node>
+        </list>
+
+        <node name="talent">                           # Wenn kein type angegeben wurde, dann ist es ein für dieses Element neues element
+            <attr name="variant" value="text" />
+            <attr name="name" value="text" />
+            <attr name="at" value="int" />
+            <attr name="pa" value="int" />
+            <attr name="taw" value="int" />
+        </node>
+    </struct>
+
+
+Implementierungsschritte:
+
+0. Struktur Creator
+    0.1 Add/remove/edit
+1. Struktur Manager zur Verwaltung der Lexikon strukturen
+    1.1 Ohne Datentypen => alle elemente werden   value="text" gesetzt.
+    1.2 Interpreter und Validatoren implementieren
+2. Struktur zu GUI Mapper bauen.
+    2.1 Ein XRC Format wäre erstrebenswert, da XSLT nutzbar.
+    2.2 generierte Strukturen Cachen.
+

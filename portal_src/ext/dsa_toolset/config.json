@@ -1,0 +1,241 @@
+{
+  "ident": "dsa_toolset",
+  "name" : "DSA - Toolset",
+  "help": "A Collection of Tools for an easier handling of DSA Tasks",
+  "configs": ["data", "module.json"],
+  "resources":[["xrc", "xrc"], ["xslt", "xslt"], ["lexicon", "xml"]] ,
+  "configsdefault": "{}",
+  "lexicon": {
+     "templates": {
+       "default" : "lexicon_detail_default.mako",
+       "eq" : "lexicon_detail_eq.mako"
+     }
+  },
+  "tools": [
+    {"name": "Resource Manager", "ui": "data", "start": "res_init_ui"},
+    {"name": "H-Gen", "ui": "hgen", "start": "hgen_init_ui"},
+    {"name": "Lexicon", "ui": "lexicon", "start": "lexicon_init_ui"}
+  ],
+  "ui": {
+    "file" : ["res", "ui", "dsa_toolset.xrc"],
+    "elements" : {
+      "main" : {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"tools" }
+      },
+      "data": {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"data" }
+      },
+      "CreateResourceDlg": {
+        "cacheable": true, "type": "Dialog", "params": { "parent": null, "name":"CreateResourceDlg" }
+      },
+      "hgen": {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"hgen" }
+      },
+      "lexicon": {
+        "cacheable": true, "type" : "Panel" , "params" : { "parent": null , "name":"lexicon" }
+      }
+    },
+    "events" : [
+      {
+        "name":"lex_detail_group",
+         "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"LexiconHandler", "funcs" : [ "trigger_goto_group_result" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"categories",
+         "event" : [
+          {
+            "name": "EVT_COMBOBOX",
+            "handler": [
+              { "name":"LexiconHandler", "funcs" : [ "trigger_category_selected" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"search_keywords",
+         "event" : [
+          {
+            "name": "EVT_TEXT_ENTER",
+            "handler": [
+              { "name":"LexiconHandler", "funcs" : [ "trigger_search" ] }
+            ]
+          }
+        ]
+      },
+       {
+        "name":"lex_search_result",
+         "event" : [
+          {
+            "name": "EVT_LISTBOX",
+            "handler": [
+              { "name":"LexiconHandler", "funcs" : [ "select_search_result" ] }
+            ]
+          }
+        ]
+      },
+       {
+        "name":"search_btn",
+         "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"LexiconHandler", "funcs" : [ "trigger_search" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"resource_tree",
+         "event" : [
+          {
+            "name": "EVT_TREE_ITEM_EXPANDING",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "want_to_expand" ] }
+            ]
+          },
+          {
+            "name": "EVT_TREE_SEL_CHANGED",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "want_to_display" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ok_add_res_btn",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "add_resource_ok" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "cancel_add_res_btn",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "add_resource_cancel" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "toollist",
+        "event" : [
+          {
+            "name": "EVT_CHOICE",
+            "handler": [
+              { "name":"XmlEditHandler", "funcs" : [ "selectTool" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "add_resource",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "add_resource" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "rem_resource",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"XmlResourceHandler", "funcs" : [ "rem_resource" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "add_char",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"HgenHandler", "funcs" : [ "add_char" ] }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "rem_char",
+        "event" : [
+          {
+            "name": "EVT_BUTTON",
+            "handler": [
+              { "name":"HgenHandler", "funcs" : [ "rem_char" ] }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "public": {
+    "start" : [
+      { "name" : "XmlEditHandler", "funcs" : ["start"] }
+    ],
+    "initui": [
+      { "name" : "XmlEditHandler", "funcs" : ["initui"] }
+    ],
+    "update_initresource": [
+      { "name" : "XmlResourceHandler", "funcs" : ["update_initresource"] }
+    ],
+    "res_init_ui": [
+      { "name" : "XmlResourceHandler", "funcs" : ["res_init_ui"] }
+    ],
+    "hgen_init_ui": [
+      { "name" : "HgenHandler", "funcs" : ["hgen_init_ui"] }
+    ],
+    "got_resmgr": [
+      { "name" : "HgenHandler", "funcs" : ["got_resmgr"] }
+    ],
+    "lexicon_init_ui": [
+      { "name" : "LexiconHandler", "funcs" : ["self_init_ui"] }
+    ],
+    "got_resmgr_lexicon": [
+      { "name" : "LexiconHandler", "funcs" : ["got_resmgr_lexicon"] }
+    ],
+    "get_resmgr": [
+      { "name" : "XmlResourceHandler", "funcs" : ["get_resmgr"] }
+    ],
+    "add_resource_show": [
+      { "name" : "XmlResourceHandler", "funcs" : ["add_resource_show"] }
+    ]
+  },
+  "handler" : [
+    {
+      "name" : "XmlEditHandler",
+      "modul" : "portal_src.ext.dsa_toolset.bin.handler",
+      "cls" : "XmlEditHandler"
+    },{
+      "name" : "XmlResourceHandler",
+      "modul" : "portal_src.ext.dsa_toolset.bin.handler_res",
+      "cls" : "XmlResourceHandler"
+    },{
+      "name" : "HgenHandler",
+      "modul" : "portal_src.ext.dsa_toolset.bin.handler_hgen",
+      "cls" : "HgenHandler"
+    },{
+      "name" : "LexiconHandler",
+      "modul" : "portal_src.ext.dsa_toolset.bin.handler_lexicon",
+      "cls" : "LexiconHandler"
+    }
+  ]
+}
